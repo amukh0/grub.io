@@ -41,7 +41,7 @@ Because a paid firebase account was used, I have excluded some files required to
 ## App Structure
 
 ```
-root/
+grub.io-public/
  ├── app/
  │   ├── event/
  │   │   ├── [id].tsx              # Event detail with tabs (Feed, Share, Analytics)
@@ -76,7 +76,7 @@ root/
  ├── app.json                      # expo project config
  ├── package-lock.json             # exact dependency versions
  ├── package.json                  # scripts, dependencies
- ├── README.md                     # this file you are reading right now
+ ├── README.md                     # descriptive readme (included both in grub.io-public and root directory)
  ├── expo-env.d.ts                 # ts declaration for expo environment vars 
  └── tsconfig.json                 # ts compiler stuff
 ```
@@ -95,8 +95,8 @@ root/
 
 1. **Clone the repository**
 ```bash
-git clone https://github.com/yourusername/grubio.git
-cd grubio
+git clone https://github.com/amukh0/grub.io.git
+cd grub.io
 ```
 
 2. **Install dependencies**
@@ -108,34 +108,47 @@ npm install
    - Create a Firebase project
    - Enable Email Authentication, Database, and Storage
       - Note: paid Firebase account is needed for storage
-   - Create your own `src/firebase.ts` and copy `src/firebase.template.ts` into it
+   - Create your own `src/firebase.ts` and copy `src/firebase.template.ts` into it, complete template accordingly
 
 4. **Configure Firestore Security Rules**
 ```javascript
 rules_version = '2';
-
 service cloud.firestore {
   match /databases/{database}/documents {
-    match /posts/{eventId}/{postId} {
-      allow read: if true;
-      allow write: if request.auth != null;
+    
+    // events collection
+    match /events/{eventId} {
+      // anyone authenticated can create events
+      allow create: if request.auth != null;
+      
+      // allow reading any event if authenticated (needed for join code lookup)
+      allow read: if request.auth != null;
+      
+      // allow updates if authenticated
+      allow update: if request.auth != null;
+      
+      // posts within events
+      match /posts/{postId} {
+        allow read: if request.auth != null;
+        allow create: if request.auth != null;
+        allow update: if request.auth != null;
+        allow delete: if request.auth != null;
+      }
     }
+    
+    // users collection
     match /users/{userId} {
       allow read: if true;
       allow write: if request.auth.uid == userId;
     }
+    
+    // notifications
     match /notifications/{notificationId} {
-      allow read, write: if request.auth.uid == resource.data.userId;
+      allow read: if request.auth != null && 
+        request.auth.uid == resource.data.userId;
       allow create: if request.auth != null;
-    }
-  }
-}
-
-service firebase.storage {
-  match /b/{bucket}/o {
-    match /posts/{eventId}/{filename} {
-      allow read: if true;
-      allow write: if request.auth != null;
+      allow update: if request.auth != null && 
+        request.auth.uid == resource.data.userId;
     }
   }
 }
