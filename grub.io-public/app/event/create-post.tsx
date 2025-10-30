@@ -102,10 +102,11 @@ export default function CreatePostScreen() {
         createdAt: Timestamp.now(),
       });
 
-      Alert.alert("Success", "Food post created!");
+      // UNNECESSARY ALERT
+      //Alert.alert("Success", "Food post created!");
       router.back();
     } catch (error: any) {
-      console.error("Error creating post:", error);
+      //console.error("Error creating post:", error);
       Alert.alert("Error", error.message);
     } finally {
       setUploading(false);

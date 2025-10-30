@@ -22,16 +22,16 @@ const generateJoinCode = (): string => {
 
 /**
  * Function to check if a join code is unique (not already used by any existing event).
+ * This function sometimes throws errors due to permission issues; ensure proper Firestore rules are set!
  * @param {string} code - join code to check
  * @returns {boolean} - true if the join code is unique (not used by any existing event)
  */
-/*
 const isJoinCodeUnique = async (code: string): Promise<boolean> => {
   const eventsRef = collection(db, "events");
   const q = query(eventsRef, where("joinCode", "==", code));
   const snapshot = await getDocs(q);
   return snapshot.empty; // only true if no events have this code
-}; */
+}; 
 
 /**
  * Screen component for creating a new event.
@@ -50,9 +50,9 @@ export default function CreateEventScreen() {
    */
   const createEvent = async () => {
     const user = auth.currentUser;
-    console.log("Current user:", user);  // debug line
-    console.log("User ID:", user?.uid);  // debug line
-    console.log("Email:", user?.email);  // debug line
+    //console.log("Current user:", user);  // debug line
+    //console.log("User ID:", user?.uid);  // debug line
+    //console.log("Email:", user?.email);  // debug line
 
 
     if (!user) {
@@ -68,19 +68,19 @@ export default function CreateEventScreen() {
     setLoading(true);
 
     try {
-        console.log("2. Generating join code...");
+        //console.log("2. Generating join code...");
         let joinCode = generateJoinCode();
-        //let isUnique = await isJoinCodeUnique(joinCode);
+        let isUnique = await isJoinCodeUnique(joinCode);
 
-        console.log("3. Join code generated:", joinCode);
+        //console.log("3. Join code generated:", joinCode);
 
       
         // keep generating til new code, only should matter when we have lots of events
-      //  while (!isUnique) {
-      //      joinCode = generateJoinCode();
-      //      isUnique = await isJoinCodeUnique(joinCode);
-      //  }
-        console.log("4. Creating event document...");
+        while (!isUnique) {
+            joinCode = generateJoinCode();
+            isUnique = await isJoinCodeUnique(joinCode);
+        }
+        //console.log("4. Creating event document...");
 
         const eventRef = collection(db, "events");
         const docRef = await addDoc(eventRef, {
@@ -92,16 +92,18 @@ export default function CreateEventScreen() {
             joinCode,
             createdAt: Timestamp.now(),
         });
-        console.log("5. Event document created with ID:", docRef.id);
+        //console.log("5. Event document created with ID:", docRef.id);
 
-    Alert.alert("Success", `Event created! Join code: ${joinCode}`);
-    console.log("Created event id:", docRef.id);  // debug line
+    // UNNECESSARY ALERT
+    // Alert.alert("Success", `Event created! Join code: ${joinCode}`);
+
+    //console.log("Created event id:", docRef.id);  // debug line
     // got to newly created event screen!!
-    console.log("6. Navigating to event...");
+    //console.log("6. Navigating to event...");
 
     router.replace({ pathname: "/event/[id]", params: { id: docRef.id } });
     } catch (error: any) {
-      console.error("Error creating event:", error);
+      //console.error("Error creating event:", error);
       Alert.alert("Error", error.message);
     } finally {
       setLoading(false);

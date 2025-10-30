@@ -61,7 +61,7 @@ export default function EventScreen() {
           Alert.alert("Not found", `No event found for id: ${id}`);
         }
       } catch (err) {
-        console.error("Error fetching event:", err);
+        //console.error("Error fetching event:", err);
         Alert.alert("Fetch error", String(err));
       }
     };
@@ -84,14 +84,14 @@ export default function EventScreen() {
         setPosts(allPosts);
         setFilteredPosts(allPosts);
       }, (err) => {
-        console.error("Posts snapshot error:", err);
+        //console.error("Posts snapshot error:", err);
         const code = (err as any)?.code || (err as any)?.message;
         if (String(code).includes("permission-denied")) {
           Alert.alert("Permission error", "Listener lost permission. Redirecting to login.");
           try {
             router.replace("/login");
           } catch (e) {
-            console.error(e);
+            //console.error(e);
           }
         }
       }
@@ -124,14 +124,14 @@ export default function EventScreen() {
       const allPostsData = snapshot.docs.map((doc) => ({ id: doc.id, ...doc.data() })) as Post[];
       setAllPosts(allPostsData);
     }, (err) => {
-      console.error("Posts snapshot error:", err);
+      //console.error("Posts snapshot error:", err);
         const code = (err as any)?.code || (err as any)?.message;
         if (String(code).includes("permission-denied")) {
           Alert.alert("Permission error", "Listener lost permission. Redirecting to login.");
           try {
             router.replace("/login");
           } catch (e) {
-            console.error(e);
+            //console.error(e);
           }
         }
       }
@@ -205,10 +205,11 @@ export default function EventScreen() {
           });
         }
 
-        Alert.alert("Claimed!", "You've claimed this item. Contact the poster to pick it up!");
+        // UNNECESSARY ALERT
+        // Alert.alert("Claimed!", "You've claimed this item. Contact the poster to pick it up!");
       }
     } catch (error) {
-      console.error("Error claiming post:", error);
+      //console.error("Error claiming post:", error);
       Alert.alert("Error", "Could not update claim status.");
     }
   };
@@ -224,9 +225,10 @@ export default function EventScreen() {
       await updateDoc(postRef, {
         completed: true,
       });
-      Alert.alert("Completed", "Post marked as complete and removed from feed.");
+      // UNNECESSARY ALERT
+      //Alert.alert("Completed", "Post marked as complete and removed from feed.");
     } catch (error) {
-      console.error("Error marking complete:", error);
+      //console.error("Error marking complete:", error);
       Alert.alert("Error", "Could not mark as complete.");
     }
   };
@@ -242,7 +244,7 @@ export default function EventScreen() {
         message: `Join my event "${event.title}" on Grub.io! Use code: ${event.joinCode}`,
       });
     } catch (error) {
-      console.error("Error sharing:", error);
+      //console.error("Error sharing:", error);
     }
   };
 

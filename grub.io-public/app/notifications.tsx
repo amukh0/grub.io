@@ -43,7 +43,7 @@ export default function NotificationsScreen() {
         })) as Notification[];
         setNotifications(notifs);
       }, (err) => {
-        console.error("Notifications snapshot error:", err);
+        //console.error("Notifications snapshot error:", err);
         const code = (err as any)?.code || (err as any)?.message;
         if (String(code).includes("permission-denied")) {
           try { router.replace("/login"); } catch(e) { console.error(e); }
@@ -66,7 +66,7 @@ export default function NotificationsScreen() {
       const notifRef = doc(db, "notifications", notificationId);
       await updateDoc(notifRef, { read: true });
     } catch (error) {
-      console.error("Error marking notification as read:", error);
+      //console.error("Error marking notification as read:", error);
     }
   };
 

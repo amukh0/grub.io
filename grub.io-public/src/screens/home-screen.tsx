@@ -44,7 +44,7 @@ export default function HomeScreen() {
 
       // silent err handling if user signed out really fast
       if (!auth.currentUser) {
-        console.info("getEvents aborted: user signed out during request");
+        //console.info("getEvents aborted: user signed out during request");
         return;
       }
 
@@ -58,17 +58,17 @@ export default function HomeScreen() {
       const code = (error as any)?.code || (error as any)?.message;
       // if user signed out randomly, maybe can take out later
       if (String(code).includes("permission-denied") && !auth.currentUser) {
-        console.info("Permission denied fetching events after sign-out; suppressing error.");
+        //console.info("Permission denied fetching events after sign-out; suppressing error.");
         return;
       }
 
-      console.error("Error fetching events:", error);
+      //console.error("Error fetching events:", error);
       // for weird permission issues go back to login
       if (String(code).includes("permission-denied")) {
         try {
           router.replace("/login");
         } catch (navErr) {
-          console.error("Failed to navigate to login after permission error:", navErr);
+          //console.error("Failed to navigate to login after permission error:", navErr);
         }
       }
     } finally {
@@ -93,14 +93,14 @@ export default function HomeScreen() {
 
   const unsubscribe = onSnapshot( q, (snapshot) => { setUnreadCount(snapshot.size);},
     (err) => {
-      console.error("Notifications snapshot error:", err);
+      //console.error("Notifications snapshot error:", err);
       // listener logout error handling
       const code = (err as any)?.code || (err as any)?.message;
       if (String(code).includes("permission-denied")) {
         try {
           router.replace("/login");
         } catch (navErr) {
-          console.error("Navigation to login failed after listener error:", navErr);
+          //console.error("Navigation to login failed after listener error:", navErr);
         }
       }
     }
@@ -131,19 +131,19 @@ export default function HomeScreen() {
     try {
       clearUnsubscribers();
     } catch (err) {
-      console.error("Error clearing unsubscribers:", err);
+      //console.error("Error clearing unsubscribers:", err);
     }
 
     try {
       router.replace("/login");
     } catch (navErr) {
-      console.error("Navigation to login failed:", navErr);
+      //console.error("Navigation to login failed:", navErr);
     }
 
     try {
       await signOut(auth);
     } catch (err) {
-      console.error("Sign out failed:", err);
+      //console.error("Sign out failed:", err);
     }
   };
 

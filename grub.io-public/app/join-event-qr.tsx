@@ -64,10 +64,11 @@ export default function JoinEventQRScreen() {
         attendees: arrayUnion(user.uid),
       });
 
-      Alert.alert("Success!", `You've joined "${eventData.title}"!`);
+      // UNNECESSARY ALERT
+      //Alert.alert("Success!", `You've joined "${eventData.title}"!`);
       router.replace({ pathname: "/event/[id]", params: { id: eventDoc.id } });
     } catch (error: any) {
-      console.error("Error joining event:", error);
+      //console.error("Error joining event:", error);
       Alert.alert("Error", "Could not join event. Please try again.", [
         { text: "Scan Again", onPress: () => setScanned(false) }
       ]);

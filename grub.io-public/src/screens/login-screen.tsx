@@ -34,7 +34,8 @@ export default function LoginScreen() {
       // create user 
       await setDoc(doc(db, "users", userCredential.user.uid), { displayName: displayName.trim(),email: email.trim(),createdAt: new Date()});
 
-      Alert.alert("Account created!", `Welcome ${displayName}!`);
+      // UNNECESSARY ALERT
+      // Alert.alert("Account created!", `Welcome ${displayName}!`); 
       router.replace("/home");
     } catch (error: any) { // error handling things 
       if (error.code === "auth/email-already-in-use") {
@@ -55,7 +56,7 @@ export default function LoginScreen() {
     if (isSubmitting) return;
     setIsSubmitting(true);
     try {
-      const userCredential = await signInWithEmailAndPassword( auth, email.trim(), password); // var is unused. delete?
+      const userCredential = await signInWithEmailAndPassword( auth, email.trim(), password); // var is unused
       router.replace("/home");
     } catch (error: any) { // more error handling
       if (error.code === "auth/user-not-found") {
